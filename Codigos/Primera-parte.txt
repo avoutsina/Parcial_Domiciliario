@@ -1,0 +1,240 @@
+// C++ code
+//Voutsina Labrin Alejandro
+#define A 12
+#define B 13
+#define C 7
+#define D 8
+#define E 9
+#define F 11
+#define G 10
+#define BAJAR 5
+#define SUBIR 6
+#define RESETEAR 4
+#define UNIDAD A2
+#define DECENA A1
+#define DISPLAYS_APAGADOS 0
+#define DISPLAYS_ENCENDIDOS 10
+
+int contador = 0;
+int botonSubir = 1;
+int botonSubirPrevio = 1;
+int botonBajar = 1;
+int botonBajarPrevio = 1;
+int botonResetear = 1;
+int botonResetearPrevio = 1;
+
+void setup()
+{
+  pinMode(SUBIR, INPUT_PULLUP);
+  pinMode(BAJAR, INPUT_PULLUP);
+  pinMode(RESETEAR, INPUT_PULLUP);
+  pinMode(A, OUTPUT);
+  pinMode(B, OUTPUT);
+  pinMode(C, OUTPUT);
+  pinMode(D, OUTPUT);
+  pinMode(E, OUTPUT);
+  pinMode(F, OUTPUT);
+  pinMode(G, OUTPUT);
+  pinMode(UNIDAD, OUTPUT);
+  pinMode(DECENA, OUTPUT);
+}
+
+void loop()
+{
+  int botonPresionado = presionarBoton();
+  if (botonPresionado == SUBIR)
+  {
+   contador++;
+   if (contador > 99)
+    contador = 0;
+  }
+  else if (botonPresionado == BAJAR)
+   {
+   	contador--;
+    if (contador < 0)
+     contador = 99;
+   }
+   else if (botonPresionado == RESETEAR)
+   {
+     contador = 0;
+   }
+   encenderDisplay(contador);
+}
+
+
+void mostrarDigito(int digito)
+//Hace un switch case con los dígitos del 0 al 9 y muestra
+//el dígito que se le pase por parámetro
+{
+  digitalWrite(A, LOW);
+  digitalWrite(B, LOW);
+  digitalWrite(C, LOW);
+  digitalWrite(D, LOW);
+  digitalWrite(E, LOW);
+  digitalWrite(F, LOW);
+  digitalWrite(G, LOW);
+  switch (digito)
+  {
+   case 1:
+   {
+    digitalWrite(B, HIGH);
+    digitalWrite(C, HIGH);
+    break;
+    }
+    case 2:
+    {
+    digitalWrite(A, HIGH);
+    digitalWrite(B, HIGH);
+    digitalWrite(D, HIGH);
+    digitalWrite(E, HIGH);
+    digitalWrite(G, HIGH);
+    break;
+    }
+    case 3:
+    {
+    digitalWrite(A, HIGH);
+    digitalWrite(B, HIGH);
+    digitalWrite(C, HIGH);
+    digitalWrite(D, HIGH);
+    digitalWrite(G, HIGH);
+    break;
+    }
+    case 4:
+    {
+    digitalWrite(B, HIGH);
+    digitalWrite(C, HIGH);
+    digitalWrite(F, HIGH);
+    digitalWrite(G, HIGH);
+    break;
+    }
+    case 5:
+    {
+     digitalWrite(A, HIGH);
+     digitalWrite(C, HIGH);
+     digitalWrite(D, HIGH);
+     digitalWrite(F, HIGH);
+     digitalWrite(G, HIGH);
+     break;
+    }
+    case 6:
+    {
+     digitalWrite(A, HIGH);
+     digitalWrite(C, HIGH);
+     digitalWrite(D, HIGH);
+     digitalWrite(E, HIGH);
+     digitalWrite(F, HIGH);
+     digitalWrite(G, HIGH);
+     break;
+    }
+    case 7:
+    {
+     digitalWrite(A, HIGH);
+     digitalWrite(B, HIGH);
+     digitalWrite(C, HIGH);
+     break;
+    }
+    case 8:
+    {
+    digitalWrite(A, HIGH);
+    digitalWrite(B, HIGH);
+    digitalWrite(C, HIGH);
+    digitalWrite(D, HIGH);
+    digitalWrite(E, HIGH);
+    digitalWrite(F, HIGH);
+    digitalWrite(G, HIGH);
+    break;
+    }
+    case 9:
+    {
+    digitalWrite(A, HIGH);
+    digitalWrite(B, HIGH);
+    digitalWrite(C, HIGH);
+    digitalWrite(D, HIGH);
+    digitalWrite(F, HIGH);
+    digitalWrite(G, HIGH);
+    break;
+    }
+    case 0:
+    {
+    digitalWrite(A, HIGH);
+    digitalWrite(B, HIGH);
+    digitalWrite(C, HIGH);
+    digitalWrite(D, HIGH);
+    digitalWrite(E, HIGH);
+    digitalWrite(F, HIGH);
+    break;
+    }
+  }
+}
+
+//Selecciona el display que se le pase por parámetro
+void elegirDisplay(int display)
+{
+  if (display == UNIDAD)
+  {
+    digitalWrite(UNIDAD, 0);
+    digitalWrite(DECENA, 1);
+    delay(DISPLAYS_ENCENDIDOS);
+  }
+  else if (display == DECENA)
+  {
+   digitalWrite(UNIDAD, HIGH);
+   digitalWrite(DECENA, LOW);
+   delay(DISPLAYS_ENCENDIDOS);
+  }
+  //Si el parámetro que se le pasa no es ninguno de los
+  //anteriores, la función mantiene a los dos apagados.
+  else
+  {
+   digitalWrite(UNIDAD, HIGH);
+   digitalWrite(DECENA, HIGH);
+  }
+  
+}
+
+//Enciende los displays con sus valores respectivos
+void encenderDisplay(int contador)
+{
+ elegirDisplay(DISPLAYS_APAGADOS);
+ mostrarDigito(contador/10); //Cálculo para obtener las decenas
+ elegirDisplay(DECENA);
+ elegirDisplay(DISPLAYS_APAGADOS);
+ mostrarDigito(contador - 10*(contador / 10));//Cálculo para obtener las unidades
+ elegirDisplay(UNIDAD);
+}
+
+//Verifica que al presionar el botón y mantenerlo apretado
+//no sigan cambiando los valores de los displays
+int presionarBoton(void)//Esta función no recibe parámetros y devuelve un entero
+{
+ //Comprobamos si el botón está apagado y si anteriormente
+ // también lo estaba
+ botonSubir = digitalRead(SUBIR);
+ botonBajar = digitalRead(BAJAR);
+ botonResetear = digitalRead(RESETEAR);
+ if (botonSubir)
+   botonSubirPrevio = 1;
+ if(botonBajar)
+   botonBajarPrevio = 1;
+ if(botonResetear)
+   botonResetearPrevio = 1;
+ 
+ //Devuelve el valor del pulsador si y solo si se presiona el botón
+ //y anteriormente no estaba prendido
+ if (botonSubir == 0 && botonSubir != botonSubirPrevio)
+  {
+   botonSubirPrevio = botonSubir;
+   return SUBIR;
+  }
+ if (botonBajar == 0 && botonBajar != botonBajarPrevio)
+  {
+   botonBajarPrevio = botonBajar;
+   return BAJAR;
+  }
+ if (botonResetear == 0 && botonResetear != botonResetearPrevio)
+  {
+   botonResetearPrevio = botonResetear;
+   return RESETEAR;
+  }
+ return 0;
+}
