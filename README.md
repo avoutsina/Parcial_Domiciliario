@@ -326,6 +326,8 @@ int regularMotor (void)
 ## Descripción
 Se modifica la segunda parte agregandole un Fotodiodo, este nos determinara si el circuito funciona o no segun la señal que reciba.
 
+Fotodiodo: Es un semiconductor sensible a la incidencia de la luz visible o infrarroja. Para que su funcionamiento sea correcto se polariza inversamente, con lo que se producirá una cierta circulación de corriente cuando sea excitado por la luz.
+
 
 ## Función principal
 
